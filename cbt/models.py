@@ -1,10 +1,13 @@
 from django.db import models
 
+
 class Thought(models.Model):
     pub_datetime = models.DateTimeField()
     moody = models.CharField(max_length=400, null=True)
     event = models.CharField(max_length=100, null=True)
     old_think = models.CharField(max_length=400, null=True)
+    def __str__(self) -> str:
+        return format(self.pub_datetime, '%Y%m%d%H%M%S') 
 
 class NewThinking(models.Model):
     thought = models.ForeignKey(Thought, on_delete=models.CASCADE)
