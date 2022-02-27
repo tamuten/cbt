@@ -18,9 +18,3 @@ class FeelVariation(models.Model):
 class Feeling(models.Model):
     thought = models.ForeignKey(Thought, on_delete=models.CASCADE)
     feel_variation = models.ForeignKey(FeelVariation, on_delete=models.CASCADE)
-
-class FeelChoices(models.TextChoices):
-    SAD = 'sad', '悲しい'
-    MAD = 'mad', '怒り'
-    FUNNY = 'funny', '楽しい'
-    LOVE = 'love', '愛情'
