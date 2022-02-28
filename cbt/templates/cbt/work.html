@@ -1,18 +1,58 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ワーク</title>
+    {# Load the tag library #}
+    {% load bootstrap4 %}
+
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
 </head>
+
 <body>
-        <form action="{% url 'cbt:save_work' %}" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            {{ feeling_formset }}
-            {{ new_think_formset }}
-            <input type="submit" value="保存">
-        </form>
+    {% load widget_tweaks %}
+    <nav></nav>
+    <form action="{% url 'cbt:save_work' %}" method="post">
+        {% csrf_token %}
+        <table class="table">
+            <tr>
+                <th><label>{{ form.pub_datetime.label }}</label></th>
+                <td>{% render_field form.pub_datetime class="form-control" %}</td>
+            </tr>
+            <tr>
+                <th><label>{{ form.moody.label }}</label></th>
+                <td>{% render_field form.moody class="form-control" %}</td>
+            </tr>
+            <tr>
+                <th><label>{{ form.event.label }}</label></th>
+                <td>{% render_field form.event class="form-control" %}</td>
+            </tr>
+            <tr>
+                <th><label>{{ form.old_think.label }}</label></th>
+                <td>{% render_field form.old_think class="form-control" %}</td>
+            </tr>
+            <tr>
+                <th><label>{{ form.basis.label }}</label></th>
+                <td>{% render_field form.basis class="form-control" %}</td>
+            </tr>
+            <tr>
+                <th><label>{{ form.counter_evidence.label }}</label></th>
+                <td>{% render_field form.counter_evidence class="form-control" %}</td>
+            </tr>
+        </table>
+
+        <div class="form-group d-flex justify-content-end">
+            <input type="submit" class="btn btn-lg btn-primary text-right" value="保存">
+        </div>
+    </form>
 </body>
+
 </html>

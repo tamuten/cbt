@@ -3,22 +3,28 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 from django import forms
 
-from .models import Feeling, NewThinking, Thought
+from .models import Feeling, NewThinking, Thought, NewFeeling
 
 from .forms import NameForm, WorkForm
 import json
 
 NewThinkFormSet = forms.inlineformset_factory(
-        parent_model=Thought,
-        model=NewThinking,
-        fields=('new_think',),
-        extra=1,
+    parent_model=Thought,
+    model=NewThinking,
+    fields=('new_think',),
+    extra=1,
 )
 FeelFormSet = forms.inlineformset_factory(
-        parent_model=Thought,
-        model=Feeling,
-        fields=('feel_variation',),
-        extra=2,
+    parent_model=Thought,
+    model=Feeling,
+    fields=('feel_variation',),
+    extra=2,
+)
+NewFeelFormSet = forms.inlineformset_factory(
+    parent_model=Thought,
+    model=NewFeeling,
+    fields=('feel_variation',),
+    extra=2,
 )
 
 
@@ -43,13 +49,17 @@ def work(request):
 
     work_form = WorkForm(instance=work, initial={
         'pub_datetime': timezone.now()})
-    new_think_formset = NewThinkFormSet(
-        instance=work,
-    )
-    feeling_formset = FeelFormSet(
-        instance=work,
-    )
-    return render(request, 'cbt/work.html', {'form': work_form, 'new_think_formset': new_think_formset, 'feeling_formset': feeling_formset})
+    
+    new_think_formset = NewThinkFormSet(instance=work)
+    feeling_formset = FeelFormSet(instance=work)
+    new_feeling_formset = NewFeelFormSet(instance=work)
+
+    context = {'form': work_form}
+    context['new_think_formset'] = new_think_formset
+    context['feeling_formset'] = feeling_formset
+    context['new_feeling_formset'] = new_feeling_formset
+
+    return render(request, 'cbt/work.html', context)
 
 
 def save_work(request):
@@ -59,19 +69,23 @@ def save_work(request):
         post = work_form.save(commit=False)
         new_think_formset = NewThinkFormSet(request.POST, instance=post)
         feeling_formset = FeelFormSet(request.POST, instance=post)
+        new_feeling_formset = NewFeelFormSet(request.POST, instance=post)
         if new_think_formset.is_valid() and feeling_formset.is_valid():
             post.save()
             new_think_formset.save()
             feeling_formset.save()
+            new_feeling_formset.save()
             return HttpResponseRedirect('/cbt/')
         else:
             context['new_think_formset'] = new_think_formset
             context['feeling_formset'] = feeling_formset
+            context['new_feeling_formset'] = new_feeling_formset
 
     else:
         context['new_think_formset'] = NewThinkFormSet()
         context['feeling_formset'] = FeelFormSet()
-    
+        context['new_feeling_formset'] = NewFeelFormSet()
+
     return render(request, 'cbt/work.html', context)
 
 

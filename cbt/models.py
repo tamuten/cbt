@@ -6,6 +6,8 @@ class Thought(models.Model):
     moody = models.CharField(max_length=400, null=True)
     event = models.CharField(max_length=100, null=True)
     old_think = models.CharField(max_length=400, null=True)
+    basis = models.CharField(max_length=400, null=True)
+    counter_evidence = models.CharField(max_length=400, null=True)
     def __str__(self) -> str:
         return format(self.pub_datetime, '%Y%m%d%H%M%S') 
 
@@ -21,3 +23,9 @@ class FeelVariation(models.Model):
 class Feeling(models.Model):
     thought = models.ForeignKey(Thought, on_delete=models.CASCADE)
     feel_variation = models.ForeignKey(FeelVariation, on_delete=models.CASCADE)
+    strength = models.IntegerField(null=True)
+
+class NewFeeling(models.Model):
+    thought = models.ForeignKey(Thought, on_delete=models.CASCADE)
+    feel_variation = models.ForeignKey(FeelVariation, on_delete=models.CASCADE)
+    strength = models.IntegerField(null=True)
